@@ -1,0 +1,99 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+entity Counter is
+    generic (
+        WIDTH : integer := 4  -- Define the counter bit width
+    );
+    Port (
+        clk    : in  STD_LOGIC;       -- Clock input
+        areset : in  STD_LOGIC;       -- Asynchronous reset input
+        sreset : in  STD_LOGIC;       -- Synchronous reset input
+        count  : out STD_LOGIC_VECTOR (WIDTH-1 downto 0)  -- Counter output
+    );
+end Counter;
+
+architecture Behavioral of Counter is
+    signal counter_value : STD_LOGIC_VECTOR(WIDTH-1 downto 0) := (others => '0');
+begin
+    process (clk, areset)
+    begin
+        if areset = '1' then               -- Asynchronous reset
+            counter_value <= (others => '0');
+        elsif rising_edge(clk) then
+            if sreset = '1' then           -- Synchronous reset
+                counter_value <= (others => '0');
+            else
+                counter_value <= counter_value + 1;  -- Increment counter
+            end if;
+        end if;
+    end process;
+
+    count <= counter_value;  -- Assign counter value to output
+end Behavioral;
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity Counter_Test is
+end Counter_Test;
+
+architecture Behavioral of Counter_Test is
+    -- Signals for each counter instance
+    signal clk     : STD_LOGIC := '0';
+    signal areset  : STD_LOGIC := '0';
+    signal sreset  : STD_LOGIC := '0';
+    signal count2  : STD_LOGIC_VECTOR(1 downto 0);
+    signal count4  : STD_LOGIC_VECTOR(3 downto 0);
+    signal count6  : STD_LOGIC_VECTOR(5 downto 0);
+    signal count11 : STD_LOGIC_VECTOR(10 downto 0);
+
+begin
+    -- Clock generation process (50 MHz example)
+    clk_process : process
+    begin
+        clk <= not clk after 10 ns;  -- 50 MHz clock period
+        wait for 10 ns;
+    end process clk_process;
+
+    -- Instance of 2-bit counter
+    Counter2 : entity work.Counter
+        generic map (WIDTH => 2)
+        port map (
+            clk => clk,
+            areset => areset,
+            sreset => sreset,
+            count => count2
+        );
+
+    -- Instance of 4-bit counter
+    Counter4 : entity work.Counter
+        generic map (WIDTH => 4)
+        port map (
+            clk => clk,
+            areset => areset,
+            sreset => sreset,
+            count => count4
+        );
+
+    -- Instance of 6-bit counter
+    Counter6 : entity work.Counter
+        generic map (WIDTH => 6)
+        port map (
+            clk => clk,
+            areset => areset,
+            sreset => sreset,
+            count => count6
+        );
+
+    -- Instance of 11-bit counter
+    Counter11 : entity work.Counter
+        generic map (WIDTH => 11)
+        port map (
+            clk => clk,
+            areset => areset,
+            sreset => sreset,
+            count => count11
+        );
+
