@@ -97,3 +97,41 @@ begin
             count => count11
         );
 
+//2. Reset Mechanisms	
+//•	Synchronous Reset: The counter is reset to zero on the rising clock edge when the reset signal is active.	
+//•	Asynchronous Reset: The counter is reset immediately when the reset signal is active, regardless of the clock signal.
+//In the VHDL code, both synchronous and asynchronous resets are implemented as separate processes. 
+//You can toggle the reset signal in the testbench to observe the different behaviors.
+//Example VHDL Code Snippet for a 2-bit Synchronous Counter:
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+entity synchronous_counter is    Port ( clk : in STD_LOGIC;           
+reset : in STD_LOGIC;           
+count : out STD_LOGIC_VECTOR(1 downto 0));end synchronous_counter;
+architecture Behavioral of synchronous_counter is    signal count_reg : STD_LOGIC_VECTOR(1 downto 0) := "00";
+begin    process(clk)    begin        
+if rising_edge(clk) then            
+if reset = '1' then                
+count_reg <= "00";  -- Reset counter            
+else                
+count_reg <= count_reg + 1;  -- Increment counter            
+end if;        
+end if;    
+end process;
+    count <= count_reg;end Behavioral;
+//3. Testbench for Simulation
+//You can create a simple testbench to stimulate the counter with a clock and reset signal:
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+entity tb_synchronous_counter isend tb_synchronous_counter;
+architecture behavior of tb_synchronous_counter is    signal clk : STD_LOGIC := '0';    
+signal reset : STD_LOGIC := '0';    signal count : STD_LOGIC_VECTOR(1 downto 0);        
+-- Instantiate the counter    component synchronous_counter        Port ( clk : in STD_LOGIC;               reset : in STD_LOGIC;               count : out STD_LOGIC_VECTOR(1 downto 0));    end component;
+begin    uut: synchronous_counter port map (clk, reset, count);
+    -- Clock generation    clk_process : process    begin        clk <= not clk after 10 ns;        wait for 10 ns;    end process;
+    -- Stimulus process    stimulus: process    begin        -- Apply reset and observe behavior        reset <= '1';        wait for 20 ns;        reset <= '0';        wait for 100 ns;                -- Apply reset again        reset <= '1';        wait for 20 ns;        reset <= '0';        wait for 100 ns;
+        -- End simulation        wait;    end process;
+end behavior;
