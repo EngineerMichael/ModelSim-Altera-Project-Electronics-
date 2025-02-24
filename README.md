@@ -100,4 +100,5 @@ Acknowledgements
 Contact
 For questions, issues, or support, please open an issue on the GitHub repository.
 End of ReadMe.
-GNU General Public License v3.0 
+GNU General Public License v3.0
+https://www.vhdl-online.de/vhdl_workshop/start more VHDL projects
